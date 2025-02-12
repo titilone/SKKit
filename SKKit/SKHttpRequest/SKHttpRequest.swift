@@ -101,7 +101,7 @@ class SKHttpRequest {
 //网络是否可用
 extension SKHttpRequest {
     var isReachable: Bool {
-        return NetworkReachabilityManager.default?.isReachable ?? false
+        return SKNetworkReachability.shared.isReachable
     }
 
     func checkNetworkBeforeRequest(completion: @escaping (Bool) -> Void) {
