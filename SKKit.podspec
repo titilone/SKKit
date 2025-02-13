@@ -13,5 +13,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '13.0'
   s.swift_versions = ['5.0', '5.1', '5.2']
   s.dependency 'MBProgressHUD'#, '~> 11.9.0'
+
   s.dependency 'Alamofire'#, '4.0.0'
 end
