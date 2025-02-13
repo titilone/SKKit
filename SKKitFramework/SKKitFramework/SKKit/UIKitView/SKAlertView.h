@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-@interface SKAlertView : NSObject<UITextViewDelegate>
+@interface SKAlertView : NSObject
 
 
 /**

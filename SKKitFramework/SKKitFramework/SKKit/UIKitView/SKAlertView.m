@@ -159,9 +159,8 @@
 }
 
 +(UIViewController*)getRootViewController{
-    UIViewController* rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-    
-    if (!rootViewController){
+    UIViewController* rootViewController;
+    if (@available(iOS 13.0, *)) {
         NSSet<UIScene *> *connectedScenes = [[UIApplication sharedApplication] connectedScenes];
         if (connectedScenes.count){
             UIScene *connectedScene = [[connectedScenes allObjects] firstObject];
@@ -171,9 +170,10 @@
                     UIWindow* win = [wins firstObject];
                     rootViewController = [win rootViewController];
                 }
-                
             }
         }
+    }else{
+        rootViewController = [[[UIApplication sharedApplication] keyWindow] rootViewController];
     }
     
     return rootViewController;
