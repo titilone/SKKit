@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
   #s.platform = :ios, '12.0'
   s.ios.deployment_target = '13.0'
   s.swift_versions = ['5.0', '5.1', '5.2']
-  #s.dependency 'MapboxMaps', '~> 11.9.0'
-  #s.dependency 'Turf', '4.0.0'
+  s.dependency 'MBProgressHUD', '~> 1.2.0'
+  s.dependency 'Alamofire', '~> 5.10.2'
 end
