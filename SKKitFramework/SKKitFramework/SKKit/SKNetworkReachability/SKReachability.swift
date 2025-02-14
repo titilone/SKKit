@@ -16,8 +16,8 @@ import Combine
 //在需要访问网络状态的视图中，使用 @EnvironmentObject 获取 SKNetworkReachability 实例。
 //@EnvironmentObject var reachability: SKNetworkReachability
 
-class SKNetworkReachability: ObservableObject {
-    static let shared = SKNetworkReachability() // 单例模式
+class SKReachability: ObservableObject {
+    static let shared = SKReachability() // 单例模式
 
     private var reachability: NetworkReachabilityManager?
 

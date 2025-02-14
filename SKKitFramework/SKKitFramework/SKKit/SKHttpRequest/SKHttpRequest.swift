@@ -33,13 +33,38 @@ import Alamofire
 //    var name:String ?
 //}
 
-
-
-
 class SKHttpRequest {
+    
     static let shared = SKHttpRequest()
+    
+    //域名:对应的证书路径。需要本地证书就先传递此数据自定义AF
+    static var serverDomains_cerPaths:[String:String] = [:]
+    
+    var AF:Session!
 
-    private init() {}
+    private init() {
+        var evaluators: [String: ServerTrustEvaluating] = [:]
+        //需要本地证书就自定义AF
+        SKHttpRequest.serverDomains_cerPaths.forEach { (serverDomain,cerPath) in
+            if let _ = URL(string: serverDomain),
+               let certificateData = try? Data(contentsOf: URL(fileURLWithPath: cerPath)),
+               let certificate = SecCertificateCreateWithData(nil, certificateData as CFData){
+                evaluators[serverDomain] = PinnedCertificatesTrustEvaluator(certificates: [certificate])
+            }
+            if (!evaluators.isEmpty){
+                let serverTrustManager = ServerTrustManager(evaluators: evaluators)
+                AF = Session(serverTrustManager: serverTrustManager)
+            }
+        }
+        
+        if AF == nil {
+            AF = Session.default
+        }
+        
+        AF.sessionConfiguration.timeoutIntervalForRequest = 100
+        AF.sessionConfiguration.headers.add(name: "Accept", value: "application/json")
+        AF.sessionConfiguration.headers.add(name: "Content-Type", value: "application/json; charset=utf-8")
+    }
 
     //T需要遵守协议Codable，结构体，枚举，类都可以遵守这个协议，一般使用struct
     func request<T: Decodable>(
@@ -50,7 +75,7 @@ class SKHttpRequest {
         completion: @escaping (Result<T, Error>) -> Void
     ) {
         AF.request(url, method: method, parameters: parameters, headers: headers)
-            .validate()
+            .validate()//contentType: ["application/json", "text/plain"]
             .responseDecodable(of: T.self) { response in
                 switch response.result {
                 case .success(let value):
@@ -101,7 +126,7 @@ class SKHttpRequest {
 //网络是否可用
 extension SKHttpRequest {
     var isReachable: Bool {
-        return SKNetworkReachability.shared.isReachable
+        return SKReachability.shared.isReachable
     }
 
     func checkNetworkBeforeRequest(completion: @escaping (Bool) -> Void) {
